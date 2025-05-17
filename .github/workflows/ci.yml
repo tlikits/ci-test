@@ -22,6 +22,7 @@ jobs:
         run: echo "${{matrix.environment}}"
 
   deploy:
+    need: build
     strategy:
       matrix:
         environment: [dev, uat, prod, test]
