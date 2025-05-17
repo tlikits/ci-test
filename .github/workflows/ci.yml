@@ -11,15 +11,22 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  build:
     strategy:
       matrix:
         environment: [dev, uat, prod, test]
     environment: ${{matrix.environment}}
     runs-on: ubuntu-latest
     steps:
-      - name: Git clone repository
-        uses: actions/checkout@v4
+      - name: Echo Environment on Build
+        run: echo "${{matrix.environment}}"
 
-      - name: Echo Environment
-        run: echo "${{matrix.dev}}"
+  deploy:
+    strategy:
+      matrix:
+        environment: [dev, uat, prod, test]
+    environment: approve-${{matrix.environment}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo Environment on deploy
+        run: echo "${{matrix.environment}}"
