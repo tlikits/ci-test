@@ -1,0 +1,25 @@
+name: Test
+run-name: "[Test] ${{ github.event.head_commit.message }}"
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    strategy:
+      matrix:
+        environment: [dev, uat, prod, test]
+    environment: ${{matrix.environment}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone repository
+        uses: actions/checkout@v4
+
+      - name: Echo Environment
+        run: echo "${{matrix.dev}}"
