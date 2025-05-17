@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  MATRIX_ENV: '["dev", "uat", "prod"]'
+
 permissions:
   id-token: write
   contents: read
@@ -21,7 +24,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        environment: &env-matrix [dev, uat, prod]
+        environment: ${{ fromJson(env.MATRIX_ENV) }}
     environment: approve-${{matrix.environment}}
     runs-on: ubuntu-latest
     steps:
@@ -32,7 +35,7 @@ jobs:
     needs: approve
     strategy:
       matrix:
-        environment: *env-matrix
+        environment: ${{ fromJson(env.MATRIX_ENV) }}
     environment: deploy-${{matrix.environment}}
     runs-on: ubuntu-latest
     steps:
