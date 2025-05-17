@@ -1,6 +1,8 @@
 name: Test
 run-name: "[Test] ${{ github.event.head_commit.message }}"
 
+x-environment-matrix: &env-matrix [dev, uat, prod]
+
 on:
   push:
     branches:
@@ -12,22 +14,29 @@ permissions:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        environment: [dev, uat, prod, test]
-    environment: ${{matrix.environment}}
     runs-on: ubuntu-latest
     steps:
       - name: Echo Environment on Build
         run: echo "${{matrix.environment}}"
-
-  deploy:
+  
+  approve:
     needs: build
     strategy:
       matrix:
-        environment: [dev, uat, prod, test]
+        environment: *env-matrix
     environment: approve-${{matrix.environment}}
     runs-on: ubuntu-latest
     steps:
-      - name: Echo Environment on deploy
+      - name: Echo Environment on Approve
+        run: echo "${{matrix.environment}}"
+
+  deploy:
+    needs: approve
+    strategy:
+      matrix:
+        environment: *env-matrix
+    environment: deploy-${{matrix.environment}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo Environment on Deploy
         run: echo "${{matrix.environment}}"
